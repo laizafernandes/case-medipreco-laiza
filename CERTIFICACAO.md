@@ -1,8 +1,8 @@
 # Auditoria Interna — Case Medipreço
 
 **Data da auditoria:** `2026-11-17`
-**Veredito Final:** **APTO COM RESSALVA ÚNICA (Git pendente)**
-*(Auditoria interna executada sobre cópia limpa do repositório. Todas as falhas documentais, de caminhos locais e de inconsistência de matriz foram corrigidas e reverificadas. Resta apenas a inicialização do repositório Git pelo candidato — `git init` / `git ls-files` — propositalmente deixada para execução manual.)*
+**Veredito Final:** **APTO COM RESSALVA (base local necessária para reprodução)**
+*(O repositório Git foi inicializado e publicado na branch `main`. O código e os exemplos estão versionados; a base SQLite e os PDFs dos contratos permanecem fora do Git. Os testes foram executados com a base local disponível.)*
 
 ---
 
@@ -25,17 +25,17 @@
 | **C** | Estrela out: `510` (03/11), `478` (12/11), mínimo `500`, crédito R\$ `95,00` | **OK** | SQL independente + `test_estrela_outubro...` OK |
 | **C** | Cedro out: `961` pico, `984` distintas, `1.080` soma picos, `946` nota | **OK** | SQL independente com `LEAD()` |
 | **C** | Números de `README.md` e `docs/PROPOSTA.md` consistentes | **OK** | `docs/PROPOSTA.md:71` alinhado com `exemplos/matriz_alertas_28_notas.csv` |
-| **D** | `python3 -m unittest discover -s tests -v`: 26 testes + comportamento | **OK** | `Ran 26 tests — OK` |
-| **D** | Comandos `fechar` e `tudo` rodam em cópia limpa e batem com README | **OK** | Validados em cópia limpa |
+| **D** | `python3 -m unittest discover -s tests -v`: 26 testes + comportamento | **OK** | `Ran 26 tests — OK` com `data/base.sqlite` local |
+| **D** | Comandos `fechar` e `tudo` rodam em cópia limpa e batem com README | **NÃO REVERIFICADO** | A cópia `final_clean` não está disponível nesta pasta |
 | **E** | Sem chaves/segredos nem caminhos absolutos locais ou dados pessoais | **OK** | `grep` em todo o repositório retornou zero ocorrências |
 | **E** | Extrato e IA sem nomes de pessoas (só IDs) | **OK** | `PRAGMA table_info(pessoas)` sem coluna de nome |
-| **E** | Arquivos do case fora do Git (`git ls-files`) | **NÃO VERIFICADO** | `.git` ainda não inicializado; `.gitignore` protege `data/*`, `contratos/`, `saida/`, `scratch/`, `.env` |
+| **E** | Arquivos locais do case fora do Git (`git ls-files`) | **OK** | `data/base.sqlite`, `contratos/`, `saida/`, `scratch/` e `.env` são ignorados; `data/README.md` é versionado |
 | **E** | Guardrail descarta número inventado | **OK** | `test_aurora_outubro_718_vs_737_sem_ia_e_guardrail` OK |
-| **F** | `docs/RELATO_IA.md` atualizado com as duas IAs e erros reais | **OK** | Rascunho atualizado em `docs/RELATO_IA.md` |
+| **F** | `docs/RELATO_IA.md` atualizado com as duas IAs e erros reais | **OK** | `docs/RELATO_IA.md` |
 
 ---
 
 ## 2. Riscos Remanescentes
-1. **Git ainda não inicializado:** ao rodar `git init`, validar `git status` e `git ls-files` para garantir que `data/base.sqlite` e `contratos/*.pdf` não entrem no primeiro commit.
+1. **Reprodução depende da base local:** `data/base.sqlite` não é versionado. Para rodar os testes e o CLI, obtenha a base do case e coloque-a em `data/base.sqlite`, conforme `data/README.md`.
 2. **Heurística de anulação em `medipreco/timeline.py:38-66`:** depende de `suporte_medipreco`; em produção exige coluna `anulado_por_evento_id`.
 3. **Fallback do `explicador.py:93`:** formata `7688.00` no padrão americano no resumo final do `fechar`, enquanto os itens usam `_fmt_brl` (`R$ 3.368,00`).

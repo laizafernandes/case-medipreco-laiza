@@ -1,4 +1,4 @@
-# Relato de Uso de IA *(Rascunho — para revisão de voz própria)*
+# Relato de Uso de IA
 
 ## 1. Por que o cálculo nunca passa por IA
 Faturamento é uma obrigação contratual e fiscal: precisa ser **100% determinístico, reproduzível e auditável** até o último centavo. Uma LLM pode arredondar diferente, confundir `data_informada` com `data_processamento` ou alucinar uma contagem quando há milhares de linhas.
@@ -12,7 +12,7 @@ Por isso, a arquitetura separa estritamente:
 ## 2. As duas IAs usadas no processo
 Durante a construção do case, trabalhei com **duas IAs** em papéis distintos:
 1. **Gemini 4 Hydrogen (Medium) — via Antigravity (IA de implementação):** usada para explorar o `base.sqlite`, ler os 6 PDFs, estruturar o pacote `medipreco/`, escrever os testes e gerar os CSVs.
-2. **[Inserir nome da 2ª IA, ex.: Claude / ChatGPT] (IA de planejamento e revisão crítica):** usada para questionar premissas, definir critérios de aceite de cada etapa, cobrar checagens independentes e auditar o repositório antes da entrega.
+2. **Copilot (assistente de IA usando Copilot SDK no VS Code; IA de planejamento e revisão crítica):** usado para questionar premissas, definir critérios de aceite de cada etapa, cobrar checagens independentes e auditar o repositório antes da entrega.
 
 ### Decisões adotadas a partir da revisão crítica
 As **3 decisões centrais** de modelagem (posição no dia 26 pela `data_informada` com ajuste na nota seguinte; anulação do lote de `07/10` da Delta; e leitura do Grupo Cedro por pico simultâneo com rateio no dia do pico) foram **sugeridas pela IA de planejamento/revisão e adotadas por mim** após validar os números e trade-offs.
