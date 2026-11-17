@@ -21,7 +21,7 @@
 | **Financeiro** | Como revisar 6 regras diferentes sem erro de planilha? | Motor único em Python + 7 validações que classificam bloqueios e avisos para revisão antes da emissão |
 | **RH do cliente** | "Baixei 718 vidas e cobraram 737, por quê?" | Gera extrato CSV pessoa a pessoa com dias ativos, plano, regra e corte de conhecimento, para compartilhar com o RH |
 | **Comercial** | "O que eu vender vai dar para cobrar?" | Catálogo declarativo em `config/contratos.json` com 8 parâmetros explícitos |
-| **CS** | "Por que a nota subiu ou caiu este mês?" | Gera decomposição por causa em reais e explicação em português com filtro numérico e revisão humana |
+| **CS** | "Por que a nota subiu ou caiu este mês?" | A comparação histórica traz decomposição por causa; o resumo atual do CLI é genérico, e a explicação causal integrada ainda é evolução proposta |
 
 ---
 
@@ -141,6 +141,7 @@ revisão e compartilhamento; o protótipo não os envia ao cliente.
 * **Onde NÃO entra:** nenhuma função de cálculo em `medipreco/timeline.py`, `medipreco/contratos.py`, `medipreco/extrato.py` ou `medipreco/validacoes.py` chama IA.
 * **Onde entra (`medipreco/explicador.py`):** recebe apenas o resumo numérico estruturado do motor (sem nomes de pessoas) para redigir a explicação em português.
 * **Filtro numérico (`validar_cifras_no_texto`):** descarta respostas com cifras que não aparecem nos dados de entrada. Ele não valida se a explicação está semanticamente correta; a revisão humana continua necessária.
+* **Dados enviados ao provedor:** com `OPENAI_API_KEY`, o CLI envia cliente, competência, valor total e corte de conhecimento à API OpenAI. Não envia IDs individuais nesse fluxo; esses dados ainda podem ser confidenciais e exigem aprovação antes de uso em produção.
 * **Modo offline:** funciona 100% sem chave de API; para ativar OpenAI, defina `OPENAI_API_KEY` no ambiente.
 
 ---

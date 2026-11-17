@@ -5,7 +5,8 @@ Faturamento é uma obrigação contratual e fiscal: precisa ser **100% determin�
 
 Por isso, a arquitetura separa estritamente:
 * **Motor determinístico (Python + SQLite):** lê a configuração JSON dos contratos, reconstrói a linha do tempo em `eventos`, gera o extrato pessoa a pessoa e roda as 7 validações pré-emissão.
-* **Peça única de IA (`medipreco/explicador.py`):** atua apenas na ponta final para transformar o resumo numérico já calculado pelo motor em uma explicação em português claro para CS/RH — com **guardrail determinístico** (`validar_cifras_no_texto`) que descarta a resposta da IA e aciona um modelo fixo caso qualquer cifra numérica inventada apareça no texto.
+* **Peça de IA (`medipreco/explicador.py`):** não calcula valores. No CLI atual, `fechar` envia apenas cliente, competência, total e corte e produz um resumo genérico; a explicação conectada às causas ainda não está integrada. Quando `OPENAI_API_KEY` está configurada, esses dados são enviados à API OpenAI. Não há IDs individuais nesse fluxo, mas valores e nomes de clientes podem ser confidenciais.
+* **Filtro numérico (`validar_cifras_no_texto`):** rejeita cifras que não aparecem na entrada e usa um fallback fixo. Não valida a verdade semântica da frase; explicações precisam de revisão humana.
 
 ---
 
@@ -31,3 +32,6 @@ As **3 decisões centrais** de modelagem (posição no dia 26 pela `data_informa
 8. **17/11/2026 — Mistura de bases na matriz (`PROXIMO_LIMITE_FAIXA`):** a matriz rodava o alerta tanto em `qtd_nota` (`4.892`) quanto no cálculo do motor (`5.048`), fazendo Outubro disparar com `5.048` na linha de `4.892`. Unificamos a coluna como `qtd_avaliada` sobre a nota emitida.
 9. **17/11/2026 — `.gitignore` ocultando `data/README.md`:** a regra `data/` ignorava toda a pasta; alteramos para `data/*` e `!data/README.md`.
 10. **17/11/2026 — `grep` parcial e `if cliente ==` residual:** o `grep` inicial olhou apenas `contratos.py` e `extrato.py`; ao varrer todo o pacote `medipreco/`, encontramos `if cliente ==` residual em `medipreco/comparacao.py` (para rótulos de observação/causa) e links absolutos locais em `docs/PROPOSTA.md`; ambos foram removidos.
+11. **17/11/2026 — Alertas sem corte de conhecimento:** as validações de carga atípica e SLA consultavam eventos processados depois do corte informado; em Estrela Out/2026, `fechar` reportava desligamentos conhecidos somente em `05/11` quando o corte era `03/11`. Adicionamos o filtro temporal e testes de regressão.
+12. **17/11/2026 — Variação mensal inativa no `fechar`:** o CLI passava `None` como valor do mês anterior, desativando o alerta de variação. Agora consulta a nota emitida na competência anterior e inclui esse caso no teste de integração.
+13. **17/11/2026 — Proposta prometia mais que o protótipo:** `tudo` era descrito como fluxo pré-emissão, embora gere um retroteste, e a IA como explicação por causa, embora o CLI produza um resumo genérico. Corrigimos a descrição, distinguimos `fechar` de `tudo` e explicitamos os dados enviados ao provedor e os limites do filtro numérico.
