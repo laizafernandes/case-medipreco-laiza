@@ -1,0 +1,20 @@
+cliente,competencia,data_emissao,valor_emitido,delta_unidade,delta_metodo,delta_relogio_emissao,valor_na_emissao,delta_info_tardia,delta_faixa_degrau,valor_conhecido_final,diff_emissao,diff_final,erro_pct,causas,observacao
+Aurora Logística,2026-08,2026-09-01,7359.00,0.00,0.00,-7.50,7351.50,0.00,0.00,7351.50,-7.50,-7.50,-0.10,relogio,
+Bravo Tecnologia,2026-08,2026-07-27,4815.00,0.00,0.00,0.00,4815.00,0.00,0.00,4815.00,0.00,0.00,0.00,,
+Delta Benefícios,2026-08,2026-09-01,45459.00,0.00,0.00,0.00,45459.00,2061.00,0.00,47520.00,0.00,2061.00,4.53,metodo_contagem;relogio,
+Estrela Indústria,2026-08,2026-09-01,4778.50,0.00,0.00,0.00,4778.50,-9.50,0.00,4769.00,0.00,-9.50,-0.20,relogio,
+Faro Serviços,2026-08,2026-09-01,2926.00,0.00,-9.58,-3.90,2912.52,0.35,0.00,2912.87,-13.48,-13.13,-0.45,metodo_contagem;relogio,
+Grupo Cedro,2026-08,2026-09-01,7744.00,0.00,232.00,0.00,7976.00,0.00,0.00,7976.00,232.00,232.00,3.00,metodo_contagem,
+Aurora Logística,2026-09,2026-10-01,7381.50,0.00,0.00,15.00,7396.50,0.00,0.00,7396.50,15.00,15.00,0.20,relogio,
+Bravo Tecnologia,2026-09,2026-08-27,7485.00,-2505.00,0.00,15.00,4995.00,15.00,0.00,5010.00,-2490.00,-2475.00,-33.07,unidade_errada;relogio,Unidade cobrada na nota divergiu da unidade contratual.
+Delta Benefícios,2026-09,2026-10-01,49410.00,0.00,90.00,0.00,49500.00,-3546.00,-5106.00,45954.00,90.00,-3456.00,-6.99,metodo_contagem;relogio,Mudança de faixa por efeito degrau.
+Estrela Indústria,2026-09,2026-10-01,4835.50,0.00,0.00,0.00,4835.50,38.00,0.00,4873.50,0.00,38.00,0.79,relogio,
+Faro Serviços,2026-09,2026-10-01,2838.00,0.00,-1.83,-1.10,2835.07,0.00,0.00,2835.07,-2.93,-2.93,-0.10,metodo_contagem,
+Grupo Cedro,2026-09,2026-10-01,7688.00,0.00,16.00,0.00,7704.00,0.00,0.00,7704.00,16.00,16.00,0.21,metodo_contagem,
+Aurora Logística,2026-10,2026-11-03,6378.00,0.00,0.00,-160.50,6217.50,0.00,0.00,6217.50,-160.50,-160.50,-2.52,relogio,
+Bravo Tecnologia,2026-10,2026-09-28,5055.00,0.00,0.00,-15.00,5040.00,0.00,0.00,5040.00,-15.00,-15.00,-0.30,relogio,
+Delta Benefícios,2026-10,2026-11-03,48920.00,0.00,140.00,-3628.00,45432.00,0.00,-5048.00,45432.00,-3488.00,-3488.00,-7.13,metodo_contagem,Mudança de faixa por efeito degrau.
+Estrela Indústria,2026-10,2026-11-03,4845.00,0.00,0.00,0.00,4845.00,-95.00,0.00,4750.00,0.00,-95.00,-1.96,minimo_contratual;relogio,Mínimo contratual acionado após eventos tardios.
+Faro Serviços,2026-10,2026-11-03,2871.00,0.00,-6.39,4.97,2869.58,0.00,0.00,2869.58,-1.42,-1.42,-0.05,metodo_contagem,
+Grupo Cedro,2026-10,2026-11-03,7568.00,0.00,120.00,0.00,7688.00,0.00,0.00,7688.00,120.00,120.00,1.59,metodo_contagem,
+Bravo Tecnologia,2026-11,2026-10-27,5205.00,0.00,0.00,15.00,5220.00,0.00,0.00,5220.00,15.00,15.00,0.29,relogio,

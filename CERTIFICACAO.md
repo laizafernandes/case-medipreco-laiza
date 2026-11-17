@@ -1,0 +1,41 @@
+# Auditoria Interna — Case Medipreço
+
+**Data da auditoria:** `2026-11-17`
+**Veredito Final:** **APTO COM RESSALVA ÚNICA (Git pendente)**
+*(Auditoria interna executada sobre cópia limpa do repositório. Todas as falhas documentais, de caminhos locais e de inconsistência de matriz foram corrigidas e reverificadas. Resta apenas a inicialização do repositório Git pelo candidato — `git init` / `git ls-files` — propositalmente deixada para execução manual.)*
+
+---
+
+## 1. Matriz de Auditoria (Blocos A–F)
+
+| Bloco | Critério | Status | Evidência |
+|---|---|---|---|
+| **A** | 3 entregas presentes (proposta, protótipo + instrução, relato de IA) | **OK** | `docs/PROPOSTA.md`, `medipreco/` + `README.md`, `docs/RELATO_IA.md` |
+| **A** | Proposta responde às 4 áreas e cobre contrato → nota paga | **OK** | `docs/PROPOSTA.md` seções 3 e 5 |
+| **A** | Solução simples, escalável e auditável (limitações declaradas) | **OK** | `medipreco/timeline.py:38-66` (anulação heurística documentada no roadmap) |
+| **B** | Cálculo usa `eventos` e nunca `vinculos` como fonte | **OK** | `medipreco/timeline.py` consulta só `eventos`; `vinculos` só em `tests/test_timeline.py:29` |
+| **B** | Zero chamadas de IA no cálculo | **OK** | IA isolada em `medipreco/explicador.py` |
+| **B** | Zero `if`/`elif` por nome de cliente ou CNPJ fora de `config/` e `tests/` | **OK** | Busca completa em `medipreco/` retorna apenas docstring/comentário e atributos de modelo (`l.cliente`, `ex.cliente`) |
+| **B** | Contratos em `config/contratos.json` e separação dos dois eixos | **OK** | `config/contratos.json` + `medipreco/timeline.py:114-169` |
+| **C** | `vinculos` ativos = `7.793`, 0 divergências | **OK** | SQL independente: `7793`; `test_reconciliacao_com_vinculos` OK |
+| **C** | 27/28 itens reproduzidos (exceção Bravo set/2026: 499 vs 332) | **OK** | `test_reproduz_27_de_28_itens_notas_emitidas` OK |
+| **C** | Aurora out: 737 / 718 / 721; 16 de 19 saídas em `27/10` | **OK** | SQL independente: `737`, `718`, `721`, `(19, 16)` |
+| **C** | Bravo set: 332 foto / 333 emissão / 334 em 12/11; R\$ 2.505 / 2.490 / 2.475 | **OK** | SQL independente + `test_tabela_referencia...` OK |
+| **C** | Delta: `5.051` / `4.950` / `5.048` emissão; `5.280` / `5.106` / `5.048` em 12/11; lote 600 | **OK** | SQL independente com `LEAD()` |
+| **C** | Estrela out: `510` (03/11), `478` (12/11), mínimo `500`, crédito R\$ `95,00` | **OK** | SQL independente + `test_estrela_outubro...` OK |
+| **C** | Cedro out: `961` pico, `984` distintas, `1.080` soma picos, `946` nota | **OK** | SQL independente com `LEAD()` |
+| **C** | Números de `README.md` e `docs/PROPOSTA.md` consistentes | **OK** | `docs/PROPOSTA.md:71` alinhado com `exemplos/matriz_alertas_28_notas.csv` |
+| **D** | `python3 -m unittest discover -s tests -v`: 26 testes + comportamento | **OK** | `Ran 26 tests — OK` |
+| **D** | Comandos `fechar` e `tudo` rodam em cópia limpa e batem com README | **OK** | Validados em cópia limpa |
+| **E** | Sem chaves/segredos nem caminhos absolutos locais ou dados pessoais | **OK** | `grep` em todo o repositório retornou zero ocorrências |
+| **E** | Extrato e IA sem nomes de pessoas (só IDs) | **OK** | `PRAGMA table_info(pessoas)` sem coluna de nome |
+| **E** | Arquivos do case fora do Git (`git ls-files`) | **NÃO VERIFICADO** | `.git` ainda não inicializado; `.gitignore` protege `data/*`, `contratos/`, `saida/`, `scratch/`, `.env` |
+| **E** | Guardrail descarta número inventado | **OK** | `test_aurora_outubro_718_vs_737_sem_ia_e_guardrail` OK |
+| **F** | `docs/RELATO_IA.md` atualizado com as duas IAs e erros reais | **OK** | Rascunho atualizado em `docs/RELATO_IA.md` |
+
+---
+
+## 2. Riscos Remanescentes
+1. **Git ainda não inicializado:** ao rodar `git init`, validar `git status` e `git ls-files` para garantir que `data/base.sqlite` e `contratos/*.pdf` não entrem no primeiro commit.
+2. **Heurística de anulação em `medipreco/timeline.py:38-66`:** depende de `suporte_medipreco`; em produção exige coluna `anulado_por_evento_id`.
+3. **Fallback do `explicador.py:93`:** formata `7688.00` no padrão americano no resumo final do `fechar`, enquanto os itens usam `_fmt_brl` (`R$ 3.368,00`).

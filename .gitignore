@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.env
+saida/
+scratch/
+data/*
+!data/README.md
+contratos/
+.DS_Store

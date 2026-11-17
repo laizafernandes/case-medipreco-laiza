@@ -1,0 +1,29 @@
+nota_id,cliente,competencia,item,qtd_avaliada,valor_nota,alertas_bloqueio,alertas_aviso,detalhe
+NF-01180,Bravo Tecnologia,2026-08,Mensalidade,321,4815.00,,,
+NF-01194,Aurora Logística,2026-08,Mensalidade Plano Base,698,5235.00,,,
+NF-01194,Aurora Logística,2026-08,Mensalidade Plano Plus,177,2124.00,,,
+NF-01201,Delta Benefícios,2026-08,Mensalidade,5051,45459.00,,PROXIMO_LIMITE_FAIXA;DESLIGAMENTO_FORA_SLA,Base (5051) a 1.02% do limite de faixa (5000 vidas). | 186 desligamentos de 2026-08 informados fora do SLA (lag médio 19.7 dias).
+NF-01208,Estrela Indústria,2026-08,Mensalidade,503,4778.50,,DESLIGAMENTO_FORA_SLA,14 desligamentos de 2026-08 informados fora do SLA (lag médio 20.0 dias).
+NF-01215,Faro Serviços,2026-08,Mensalidade,266,2926.00,,,
+NF-01222,Grupo Cedro,2026-08,Mensalidade,431,3448.00,,,
+NF-01229,Grupo Cedro,2026-08,Mensalidade,364,2912.00,,,
+NF-01236,Grupo Cedro,2026-08,Mensalidade,173,1384.00,,,
+NF-01187,Bravo Tecnologia,2026-09,Mensalidade,499,7485.00,UNIDADE_VIDAS_EM_CONTRATO_TITULAR,VARIACAO_MAIOR_10_PCT,"Quantidade informada (499) coincide com total de vidas (499), mas o contrato cobra apenas titulares (332). | Variação de +55.5% vs mês anterior (R$ 4,815.00 -> R$ 7,485.00)."
+NF-01250,Aurora Logística,2026-09,Mensalidade Plano Base,701,5257.50,,,
+NF-01250,Aurora Logística,2026-09,Mensalidade Plano Plus,177,2124.00,,,
+NF-01257,Delta Benefícios,2026-09,Mensalidade,4941,49410.00,,PROXIMO_LIMITE_FAIXA;DESLIGAMENTO_FORA_SLA,Base (4941) a 1.18% do limite de faixa (5000 vidas). | 167 desligamentos de 2026-09 informados fora do SLA (lag médio 19.6 dias).
+NF-01264,Estrela Indústria,2026-09,Mensalidade,509,4835.50,,DESLIGAMENTO_FORA_SLA,9 desligamentos de 2026-09 informados fora do SLA (lag médio 16.6 dias).
+NF-01271,Faro Serviços,2026-09,Mensalidade,258,2838.00,,,
+NF-01278,Grupo Cedro,2026-09,Mensalidade,430,3440.00,,,
+NF-01285,Grupo Cedro,2026-09,Mensalidade,357,2856.00,,,
+NF-01292,Grupo Cedro,2026-09,Mensalidade,174,1392.00,,,
+NF-01243,Bravo Tecnologia,2026-10,Mensalidade,337,5055.00,,VARIACAO_MAIOR_10_PCT,"Variação de -32.5% vs mês anterior (R$ 7,485.00 -> R$ 5,055.00)."
+NF-01306,Aurora Logística,2026-10,Mensalidade Plano Base,548,4110.00,,VARIACAO_MAIOR_10_PCT,"Variação de -21.8% vs mês anterior (R$ 5,257.50 -> R$ 4,110.00)."
+NF-01306,Aurora Logística,2026-10,Mensalidade Plano Plus,189,2268.00,,,
+NF-01313,Delta Benefícios,2026-10,Mensalidade,4892,48920.00,CARGA_ATIPICA_QUARENTENA,DESLIGAMENTO_FORA_SLA,Quarentena: carga de 2026-10-07 trouxe 600 entradas com retroatividade de até 1010 dias. | 132 desligamentos de 2026-10 informados fora do SLA (lag médio 19.4 dias).
+NF-01320,Estrela Indústria,2026-10,Mensalidade,510,4845.00,,MINIMO_GARANTIDO_ACIONADO;DESLIGAMENTO_FORA_SLA,Mínimo contratual acionado: base real de 478 vidas ficou abaixo do mínimo de 500. | 40 desligamentos de 2026-10 informados fora do SLA (lag médio 21.2 dias).
+NF-01327,Faro Serviços,2026-10,Mensalidade,261,2871.00,,,
+NF-01334,Grupo Cedro,2026-10,Mensalidade,419,3352.00,,,
+NF-01341,Grupo Cedro,2026-10,Mensalidade,230,1840.00,,VARIACAO_MAIOR_10_PCT,"Variação de -35.6% vs mês anterior (R$ 2,856.00 -> R$ 1,840.00)."
+NF-01348,Grupo Cedro,2026-10,Mensalidade,297,2376.00,,VARIACAO_MAIOR_10_PCT,"Variação de +70.7% vs mês anterior (R$ 1,392.00 -> R$ 2,376.00)."
+NF-01299,Bravo Tecnologia,2026-11,Mensalidade,347,5205.00,,,

@@ -1,0 +1,134 @@
+{
+  "Aurora Logística": {
+    "contrato_id": "MP-2024-018",
+    "unidade": "vida",
+    "metodo_contagem": "foto_dia",
+    "dia_corte": 26,
+    "planos_precos": {
+      "Base": 7.50,
+      "Plus": 12.00
+    },
+    "faixas": null,
+    "minimo_vidas": 0,
+    "rateio_cnpj": {
+      "nota_por_cnpj": false,
+      "criterio": "unico",
+      "cnpj_unico": "41.220.871/0001-16"
+    },
+    "modalidade": {
+      "tipo": "pos_pago",
+      "regra_compensacao": "ajuste_retroativo_mes_seguinte",
+      "metodo_apuracao_efetivo": null
+    }
+  },
+  "Bravo Tecnologia": {
+    "contrato_id": "MP-2024-041",
+    "unidade": "titular",
+    "metodo_contagem": "foto_dia",
+    "dia_corte": 26,
+    "planos_precos": {
+      "*": 15.00
+    },
+    "faixas": null,
+    "minimo_vidas": 0,
+    "rateio_cnpj": {
+      "nota_por_cnpj": false,
+      "criterio": "unico",
+      "cnpj_unico": "52.907.316/0001-75"
+    },
+    "modalidade": {
+      "tipo": "pre_pago",
+      "regra_compensacao": "diferenca_mes_seguinte",
+      "metodo_apuracao_efetivo": "foto_dia_26_referencia"
+    }
+  },
+  "Delta Benefícios": {
+    "contrato_id": "MP-2025-006",
+    "unidade": "vida",
+    "metodo_contagem": "qualquer_dia_ativo",
+    "dia_corte": null,
+    "planos_precos": null,
+    "faixas": {
+      "tipo": "degrau_total",
+      "niveis": [
+        { "ate": 5000, "valor": 10.00 },
+        { "ate": 10000, "valor": 9.00 },
+        { "ate": null, "valor": 8.00 }
+      ]
+    },
+    "minimo_vidas": 0,
+    "rateio_cnpj": {
+      "nota_por_cnpj": false,
+      "criterio": "unico",
+      "cnpj_unico": "60.184.533/0001-10"
+    },
+    "modalidade": {
+      "tipo": "pos_pago",
+      "regra_compensacao": "ajuste_retroativo_mes_seguinte",
+      "metodo_apuracao_efetivo": null
+    }
+  },
+  "Estrela Indústria": {
+    "contrato_id": "MP-2025-033",
+    "unidade": "vida",
+    "metodo_contagem": "foto_dia",
+    "dia_corte": 26,
+    "planos_precos": {
+      "*": 9.50
+    },
+    "faixas": null,
+    "minimo_vidas": 500,
+    "rateio_cnpj": {
+      "nota_por_cnpj": false,
+      "criterio": "unico",
+      "cnpj_unico": "27.645.190/0001-60"
+    },
+    "modalidade": {
+      "tipo": "pos_pago",
+      "regra_compensacao": "ajuste_retroativo_mes_seguinte",
+      "metodo_apuracao_efetivo": null
+    }
+  },
+  "Faro Serviços": {
+    "contrato_id": "MP-2026-002",
+    "unidade": "vida",
+    "metodo_contagem": "pro_rata",
+    "dia_corte": null,
+    "planos_precos": {
+      "*": 11.00
+    },
+    "faixas": null,
+    "minimo_vidas": 0,
+    "rateio_cnpj": {
+      "nota_por_cnpj": false,
+      "criterio": "unico",
+      "cnpj_unico": "71.403.268/0001-22"
+    },
+    "modalidade": {
+      "tipo": "pos_pago",
+      "regra_compensacao": "ajuste_retroativo_mes_seguinte",
+      "metodo_apuracao_efetivo": null
+    }
+  },
+  "Grupo Cedro": {
+    "contrato_id": "MP-2024-057",
+    "unidade": "vida",
+    "metodo_contagem": "pico",
+    "dia_corte": null,
+    "planos_precos": {
+      "*": 8.00
+    },
+    "faixas": null,
+    "minimo_vidas": 0,
+    "rateio_cnpj": {
+      "nota_por_cnpj": true,
+      "criterio": "proporcao_dia_pico",
+      "cnpj_unico": null
+    },
+    "modalidade": {
+      "tipo": "pos_pago",
+      "regra_compensacao": "ajuste_retroativo_mes_seguinte",
+      "metodo_apuracao_efetivo": null
+    }
+  }
+}
