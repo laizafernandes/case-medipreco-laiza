@@ -19,7 +19,7 @@ from medipreco.validacoes import (
     validar_variacao_vs_mes_anterior,
 )
 
-DB_PATH = Path(__file__).resolve().parent.parent / "data/base.sqlite"
+DB_PATH = Path(__file__).resolve().parent / "fixtures/base.sqlite"
 CONHECIDO_FINAL = "2026-11-12 23:59:59"
 
 

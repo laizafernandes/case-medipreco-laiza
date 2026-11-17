@@ -9,7 +9,7 @@ from pathlib import Path
 from medipreco.contratos import carregar_contratos
 from medipreco.extrato import gerar_extratos_cliente
 
-DB_PATH = Path(__file__).resolve().parent.parent / "data/base.sqlite"
+DB_PATH = Path(__file__).resolve().parent / "fixtures/base.sqlite"
 CONHECIDO_FINAL = "2026-11-12 23:59:59"
 
 

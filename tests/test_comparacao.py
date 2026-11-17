@@ -11,7 +11,7 @@ from medipreco.comparacao import (
     listar_diferencas_corte_dia_26,
 )
 
-DB_PATH = Path(__file__).resolve().parent.parent / "data/base.sqlite"
+DB_PATH = Path(__file__).resolve().parent / "fixtures/base.sqlite"
 
 
 class TestComparacaoEtapa4(unittest.TestCase):

@@ -1,8 +1,8 @@
 # Auditoria Interna — Case Medipreço
 
 **Data da auditoria:** `2026-11-17`
-**Veredito Final:** **APTO COM RESSALVA (base local necessária para reprodução)**
-*(O repositório Git foi inicializado e publicado na branch `main`. O código e os exemplos estão versionados; a base SQLite e os PDFs dos contratos permanecem fora do Git. Os testes foram executados com a base local disponível.)*
+**Veredito Final:** **APTO COM RESSALVA (integração fiscal fora do protótipo)**
+*(O repositório Git foi publicado na branch `main`. O código, os exemplos e uma fixture de teste com identificadores sintéticos estão versionados; a base completa e os PDFs dos contratos permanecem fora do Git.)*
 
 ---
 
@@ -11,7 +11,7 @@
 | Bloco | Critério | Status | Evidência |
 |---|---|---|---|
 | **A** | 3 entregas presentes (proposta, protótipo + instrução, relato de IA) | **OK** | `docs/PROPOSTA.md`, `medipreco/` + `README.md`, `docs/RELATO_IA.md` |
-| **A** | Proposta responde às 4 áreas e cobre contrato → nota paga | **OK** | `docs/PROPOSTA.md` seções 3 e 5 |
+| **A** | Proposta responde às 4 áreas e separa o fluxo-alvo do escopo do protótipo | **OK** | `docs/PROPOSTA.md` seções 3 e 5 |
 | **A** | Solução simples, escalável e auditável (limitações declaradas) | **OK** | `medipreco/timeline.py:38-66` (anulação heurística documentada no roadmap) |
 | **B** | Cálculo usa `eventos` e nunca `vinculos` como fonte | **OK** | `medipreco/timeline.py` consulta só `eventos`; `vinculos` só em `tests/test_timeline.py:29` |
 | **B** | Zero chamadas de IA no cálculo | **OK** | IA isolada em `medipreco/explicador.py` |
@@ -25,8 +25,8 @@
 | **C** | Estrela out: `510` (03/11), `478` (12/11), mínimo `500`, crédito R\$ `95,00` | **OK** | SQL independente + `test_estrela_outubro...` OK |
 | **C** | Cedro out: `961` pico, `984` distintas, `1.080` soma picos, `946` nota | **OK** | SQL independente com `LEAD()` |
 | **C** | Números de `README.md` e `docs/PROPOSTA.md` consistentes | **OK** | `docs/PROPOSTA.md:71` alinhado com `exemplos/matriz_alertas_28_notas.csv` |
-| **D** | `python3 -m unittest discover -s tests -v`: 27 testes + comportamento | **PARCIAL** | 26 testes passaram antes da correção de formatação; 4 testes focados do explicador passaram depois. A suíte completa requer a base local, indisponível nesta cópia |
-| **D** | Comandos `fechar` e `tudo` rodam em cópia limpa e batem com README | **NÃO REVERIFICADO** | A cópia `final_clean` não está disponível nesta pasta |
+| **D** | `python3 -m unittest discover -s tests -v`: 27 testes + comportamento | **OK** | `Ran 27 tests — OK` usando `tests/fixtures/base.sqlite` |
+| **D** | Comandos `fechar` e `tudo` rodam sem a base local completa | **OK** | Ambos executados com a fixture sintética; `tudo` reproduz os 27 CSVs de `exemplos/` |
 | **E** | Sem chaves/segredos nem caminhos absolutos locais ou dados pessoais | **OK** | `grep` em todo o repositório retornou zero ocorrências |
 | **E** | Extrato e IA sem nomes de pessoas (só IDs) | **OK** | `PRAGMA table_info(pessoas)` sem coluna de nome |
 | **E** | Arquivos locais do case fora do Git (`git ls-files`) | **OK** | `data/base.sqlite`, `contratos/`, `saida/`, `scratch/` e `.env` são ignorados; `data/README.md` é versionado |
@@ -36,5 +36,5 @@
 ---
 
 ## 2. Riscos Remanescentes
-1. **Reprodução depende da base local:** `data/base.sqlite` não é versionado. Para rodar os testes e o CLI, obtenha a base do case e coloque-a em `data/base.sqlite`, conforme `data/README.md`.
+1. **Dados completos não são publicados:** testes e demonstração rodam com a fixture sintética; reproduzir a base completa original requer o arquivo local `data/base.sqlite`, descrito em `data/README.md`.
 2. **Heurística de anulação em `medipreco/timeline.py:38-66`:** depende de `suporte_medipreco`; em produção exige coluna `anulado_por_evento_id`.

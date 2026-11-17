@@ -4,7 +4,7 @@
 
 ---
 
-## 1. O problema em um caso real (Aurora Logística, Out/2026)
+## 1. O problema ilustrado pelo case (Aurora Logística, Out/2026)
 
 | Visão | Data / Corte | Vidas | O que aconteceu |
 |---|---|---:|---|
@@ -18,10 +18,10 @@
 
 | Área | Pergunta que vivia sem resposta | O que este repositório entrega |
 |---|---|---|
-| **Financeiro** | Como fechar 6 regras diferentes sem erro de planilha? | Motor único em Python + 7 travas pré-emissão (bloqueia erro de unidade e carga atípica) |
-| **RH do cliente** | "Baixei 718 vidas e cobraram 737, por quê?" | Extrato CSV pessoa a pessoa com dias ativos, plano, regra e corte de conhecimento |
+| **Financeiro** | Como revisar 6 regras diferentes sem erro de planilha? | Motor único em Python + 7 validações que classificam bloqueios e avisos para revisão antes da emissão |
+| **RH do cliente** | "Baixei 718 vidas e cobraram 737, por quê?" | Gera extrato CSV pessoa a pessoa com dias ativos, plano, regra e corte de conhecimento, para compartilhar com o RH |
 | **Comercial** | "O que eu vender vai dar para cobrar?" | Catálogo declarativo em `config/contratos.json` com 8 parâmetros explícitos |
-| **CS** | "Por que a nota subiu ou caiu este mês?" | Decomposição por causa em reais + explicador em português com guardrail anti-alucinação |
+| **CS** | "Por que a nota subiu ou caiu este mês?" | Gera decomposição por causa em reais e explicação em português com guardrail anti-alucinação |
 
 ---
 
@@ -35,12 +35,17 @@ flowchart LR
     D --> E
     E --> F[Extrato Pessoa a Pessoa]
     F --> G[7 Validações Pré-Emissão]
-    G --> H[Nota Fiscal + Explicador IA]
-    H --> I[Ajuste na Nota Seguinte]
+    G --> H[Relatório CSV + Explicador IA]
+    H --> I[Emissão da NF no ERP — fora do protótipo]
+    I --> J[Pagamento e conciliação — fora do protótipo]
+    J --> K[Ajuste na nota seguinte — processo externo]
 ```
 
+**Escopo implementado:** o protótipo reconstrói a apuração, gera extratos e relatórios
+e apresenta validações. Não emite NF, não acompanha pagamentos e não envia ajustes ao ERP.
+
 * **Eixo 1 — Realidade (`data_informada`):** quando a pessoa entrou, trocou de plano ou saiu na empresa.
-* **Eixo 2 — Conhecimento (`data_processamento <= conhecido_ate`):** o que o sistema da Medipreço já sabia até o momento da emissão. O que chegar depois vira crédito/débito na nota seguinte, sem reabrir NF emitida.
+* **Eixo 2 — Conhecimento (`data_processamento <= conhecido_ate`):** o que o sistema da Medipreço já sabia até o momento da emissão. O protótipo sinaliza diferenças tardias para análise; aplicar crédito/débito na nota seguinte é um processo externo.
 
 ---
 
@@ -84,17 +89,17 @@ Todos os contratos estão em `config/contratos.json`. **No código de produção
 
 ## 6. Como rodar
 
-Os dados do case são fictícios e não acompanham o código-fonte: coloque `base.sqlite` em `data/base.sqlite` (ver `data/README.md`). Requisito: **Python 3.9+** (testado em **Python 3.9.6**, zero dependências externas).
+Os testes e os exemplos do CLI usam a fixture sintética versionada em `tests/fixtures/base.sqlite`. A base completa do case não é publicada; para usá-la, coloque `base.sqlite` em `data/base.sqlite` (ver `data/README.md`). Requisito: **Python 3.9+** (testado em **Python 3.9.6**, zero dependências externas).
 
 ```bash
-# 1. Rodar a suíte de testes (27 testes; requer a base local em data/base.sqlite)
+# 1. Rodar a suíte de testes (27 testes; usa a fixture incluída)
 python3 -m unittest discover -s tests -v
 
 # 2. Fechar um cliente e competência (gera extrato CSV e resumo no terminal)
-python3 -m medipreco fechar --cliente "Grupo Cedro" --competencia 2026-10 --conhecido-ate 2026-11-03
+python3 -m medipreco fechar --cliente "Grupo Cedro" --competencia 2026-10 --conhecido-ate 2026-11-03 --db tests/fixtures/base.sqlite
 
 # 3. Gerar o fechamento completo (tabela comparativa, matriz de 28 notas e 25 extratos CSV)
-python3 -m medipreco tudo
+python3 -m medipreco tudo --db tests/fixtures/base.sqlite
 ```
 
 Saída real observada ao rodar o comando 2:
@@ -113,6 +118,11 @@ Arquivos gerados em `saida/` (e pré-gerados em `exemplos/`):
 ---
 
 ## 7. Validações pré-emissão
+
+Esta matriz é um **retroteste** sobre 28 notas já emitidas. As validações classificam
+bloqueios e avisos para um fluxo preventivo; o protótipo não se conecta ao emissor
+fiscal e não bloqueia notas no sistema de origem. Os extratos são produzidos para
+revisão e compartilhamento; o protótipo não os envia ao cliente.
 
 | Código da regra | Tipo | Caso real observado em `exemplos/matriz_alertas_28_notas.csv` |
 |---|---|---|
@@ -186,6 +196,9 @@ Arquivos gerados em `saida/` (e pré-gerados em `exemplos/`):
 │   ├── timeline.py
 │   └── validacoes.py
 ├── tests/
+│   ├── fixtures/
+│   │   ├── README.md
+│   │   └── base.sqlite
 │   ├── test_comparacao.py
 │   ├── test_contratos.py
 │   ├── test_extrato.py

@@ -15,7 +15,7 @@ from medipreco.timeline import (
     obter_eventos_anulados,
 )
 
-DB_PATH = Path(__file__).resolve().parent.parent / "data/base.sqlite"
+DB_PATH = Path(__file__).resolve().parent / "fixtures/base.sqlite"
 
 
 class TestTimelineEtapa1(unittest.TestCase):

@@ -1,6 +1,7 @@
 # Dados do Case
 
-Os dados fictícios do case não são versionados neste repositório.
+A base completa do case não é versionada. Para executar o CLI sobre todos os dados,
+coloque o arquivo `base.sqlite` neste diretório.
 
-Para rodar os testes e o CLI, coloque aqui o arquivo:
-- `data/base.sqlite`
+A suíte de testes usa a fixture sintética incluída em `tests/fixtures/base.sqlite`
+e não depende da base completa.
