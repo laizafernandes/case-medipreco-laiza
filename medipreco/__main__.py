@@ -17,6 +17,7 @@ from medipreco.comparacao import CONHECIDO_FINAL, comparar_emitido_vs_contrato
 from medipreco.contratos import carregar_contratos
 from medipreco.explicador import explicar_extrato
 from medipreco.extrato import ExtratoNota, gerar_extratos_cliente
+from medipreco.formatacao import formatar_brl
 from medipreco.validacoes import (
     AlertaValidacao,
     validar_cargas_atipicas_quarentena,
@@ -116,11 +117,6 @@ def _rodar_alertas_cliente(
     return alertas
 
 
-def _fmt_brl(valor: float) -> str:
-    texto = f"{valor:,.2f}"
-    return "R$ " + texto.replace(",", "X").replace(".", ",").replace("X", ".")
-
-
 def _abrir_db(caminho: str) -> sqlite3.Connection | None:
     db_path = Path(caminho)
     if not db_path.exists():
@@ -152,9 +148,9 @@ def cmd_fechar(args: argparse.Namespace) -> int:
     for ex in extratos:
         arq = _salvar_extrato_csv(ex, pasta_extratos)
         total_geral = round(total_geral + ex.valor_total_nota, 2)
-        print(f"- Tomador {ex.cnpj_tomador}: {_fmt_brl(ex.valor_total_nota)} ({len(ex.linhas)} linhas) -> {arq}")
+        print(f"- Tomador {ex.cnpj_tomador}: {formatar_brl(ex.valor_total_nota)} ({len(ex.linhas)} linhas) -> {arq}")
         for it in ex.itens:
-            print(f"  * {it.descricao}: {it.quantidade} × {_fmt_brl(it.valor_unitario)} = {_fmt_brl(it.valor_total)}")
+            print(f"  * {it.descricao}: {it.quantidade} × {formatar_brl(it.valor_unitario)} = {formatar_brl(it.valor_total)}")
 
     alertas = _rodar_alertas_cliente(conn, args.cliente, args.competencia, extratos, None, corte, contratos)
     if alertas:

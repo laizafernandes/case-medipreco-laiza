@@ -18,6 +18,8 @@ import urllib.request
 from dataclasses import dataclass
 from typing import Any, Callable
 
+from medipreco.formatacao import formatar_brl
+
 
 @dataclass(frozen=True)
 class ResultadoExplicacao:
@@ -72,35 +74,35 @@ def gerar_texto_fixo(dados: dict[str, Any]) -> str:
         return (
             f"Cliente {dados['cliente']} ({dados['competencia']}): "
             f"na foto do sistema em {dados['data_corte']} constavam {dados['qtd_foto']} vidas "
-            f"(R$ {dados['valor_foto']:.2f}). Após a carga de {dados['data_carga_tardia']}, "
+            f"({formatar_brl(dados['valor_foto'])}). Após a carga de {dados['data_carga_tardia']}, "
             f"foram processadas {dados['qtd_saidas_tardias_ate_corte']} saídas anteriores a {dados['data_corte']}, "
             f"mostrando que a realidade no corte era {dados['qtd_realidade_corte']} vidas "
             f"(e {dados['qtd_sistema_fim_mes']} vidas no fim do mês). "
-            f"A diferença líquida em reais é de R$ {dados['diferenca_reais']:.2f}."
+            f"A diferença líquida em reais é de {formatar_brl(dados['diferenca_reais'])}."
         )
 
     if cenario == "estrela_minimo_credito":
         return (
             f"Cliente {dados['cliente']} ({dados['competencia']}): "
-            f"a nota foi emitida sobre {dados['qtd_emitida']} vidas (R$ {dados['valor_emitido']:.2f}). "
+            f"a nota foi emitida sobre {dados['qtd_emitida']} vidas ({formatar_brl(dados['valor_emitido'])}). "
             f"Com os desligamentos informados após o corte, a base real no dia {dados['dia_corte']} "
             f"caiu para {dados['qtd_real']} vidas, acionando o mínimo contratual de {dados['minimo_vidas']} vidas "
-            f"(R$ {dados['valor_devido']:.2f}). Isso gera um crédito de R$ {dados['credito_reais']:.2f} na próxima nota."
+            f"({formatar_brl(dados['valor_devido'])}). Isso gera um crédito de {formatar_brl(dados['credito_reais'])} na próxima nota."
         )
 
     if cenario == "bravo_unidade_errada":
         return (
             f"Cliente {dados['cliente']} ({dados['competencia']}): "
-            f"o contrato cobra apenas por titulares (R$ {dados['valor_unitario']:.2f}/titular), "
-            f"mas a nota cobrou {dados['qtd_cobrada']} unidades (R$ {dados['valor_cobrado']:.2f}), "
+            f"o contrato cobra apenas por titulares ({formatar_brl(dados['valor_unitario'])}/titular), "
+            f"mas a nota cobrou {dados['qtd_cobrada']} unidades ({formatar_brl(dados['valor_cobrado'])}), "
             f"equivalente ao total de vidas com dependentes. "
-            f"Na foto da data de corte havia {dados['qtd_titulares_foto']} titulares (R$ {dados['valor_foto']:.2f}), "
-            f"evitando um erro de R$ {dados['erro_foto_reais']:.2f} se travado antes da emissão."
+            f"Na foto da data de corte havia {dados['qtd_titulares_foto']} titulares ({formatar_brl(dados['valor_foto'])}), "
+            f"evitando um erro de {formatar_brl(dados['erro_foto_reais'])} se travado antes da emissão."
         )
 
     return (
         f"Cliente {dados.get('cliente', '-')}, competência {dados.get('competencia', '-')}: "
-        f"valor apurado R$ {dados.get('valor_total', 0.0):.2f} "
+        f"valor apurado {formatar_brl(dados.get('valor_total', 0.0))} "
         f"(corte de conhecimento: {dados.get('conhecido_ate', '-')})."
     )
 

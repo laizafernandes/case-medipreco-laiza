@@ -87,7 +87,7 @@ Todos os contratos estão em `config/contratos.json`. **No código de produção
 Os dados do case são fictícios e não acompanham o código-fonte: coloque `base.sqlite` em `data/base.sqlite` (ver `data/README.md`). Requisito: **Python 3.9+** (testado em **Python 3.9.6**, zero dependências externas).
 
 ```bash
-# 1. Rodar toda a suíte de testes (26 testes passando)
+# 1. Rodar a suíte de testes (27 testes; requer a base local em data/base.sqlite)
 python3 -m unittest discover -s tests -v
 
 # 2. Fechar um cliente e competência (gera extrato CSV e resumo no terminal)

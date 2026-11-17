@@ -107,9 +107,15 @@ class TestExplicadorIAEtapa5(unittest.TestCase):
             "credito_reais": 95.00,
         }
         res = explicar_extrato(dados, gerador_ia=lambda _: None)
-        self.assertIn("95.00", res.texto)
+        self.assertIn("R$ 4.750,00", res.texto)
+        self.assertIn("R$ 95,00", res.texto)
         self.assertIn("478", res.texto)
         self.assertIn("500", res.texto)
+
+    def test_fallback_formata_valor_em_brl_com_separador_de_milhar(self) -> None:
+        dados = {"cliente": "Grupo Cedro", "competencia": "2026-10", "valor_total": 7688.00}
+        res = explicar_extrato(dados, gerador_ia=lambda _: None)
+        self.assertIn("R$ 7.688,00", res.texto)
 
     def test_bravo_setembro_499_vs_332(self) -> None:
         dados = {
@@ -126,7 +132,7 @@ class TestExplicadorIAEtapa5(unittest.TestCase):
         res = explicar_extrato(dados, gerador_ia=lambda _: None)
         self.assertIn("499", res.texto)
         self.assertIn("332", res.texto)
-        self.assertIn("2505.00", res.texto)
+        self.assertIn("R$ 2.505,00", res.texto)
 
 
 if __name__ == "__main__":

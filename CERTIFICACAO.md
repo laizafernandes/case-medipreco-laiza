@@ -25,7 +25,7 @@
 | **C** | Estrela out: `510` (03/11), `478` (12/11), mínimo `500`, crédito R\$ `95,00` | **OK** | SQL independente + `test_estrela_outubro...` OK |
 | **C** | Cedro out: `961` pico, `984` distintas, `1.080` soma picos, `946` nota | **OK** | SQL independente com `LEAD()` |
 | **C** | Números de `README.md` e `docs/PROPOSTA.md` consistentes | **OK** | `docs/PROPOSTA.md:71` alinhado com `exemplos/matriz_alertas_28_notas.csv` |
-| **D** | `python3 -m unittest discover -s tests -v`: 26 testes + comportamento | **OK** | `Ran 26 tests — OK` com `data/base.sqlite` local |
+| **D** | `python3 -m unittest discover -s tests -v`: 27 testes + comportamento | **PARCIAL** | 26 testes passaram antes da correção de formatação; 4 testes focados do explicador passaram depois. A suíte completa requer a base local, indisponível nesta cópia |
 | **D** | Comandos `fechar` e `tudo` rodam em cópia limpa e batem com README | **NÃO REVERIFICADO** | A cópia `final_clean` não está disponível nesta pasta |
 | **E** | Sem chaves/segredos nem caminhos absolutos locais ou dados pessoais | **OK** | `grep` em todo o repositório retornou zero ocorrências |
 | **E** | Extrato e IA sem nomes de pessoas (só IDs) | **OK** | `PRAGMA table_info(pessoas)` sem coluna de nome |
@@ -38,4 +38,3 @@
 ## 2. Riscos Remanescentes
 1. **Reprodução depende da base local:** `data/base.sqlite` não é versionado. Para rodar os testes e o CLI, obtenha a base do case e coloque-a em `data/base.sqlite`, conforme `data/README.md`.
 2. **Heurística de anulação em `medipreco/timeline.py:38-66`:** depende de `suporte_medipreco`; em produção exige coluna `anulado_por_evento_id`.
-3. **Fallback do `explicador.py:93`:** formata `7688.00` no padrão americano no resumo final do `fechar`, enquanto os itens usam `_fmt_brl` (`R$ 3.368,00`).
