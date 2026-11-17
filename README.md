@@ -21,7 +21,7 @@
 | **Financeiro** | Como revisar 6 regras diferentes sem erro de planilha? | Motor único em Python + 7 validações que classificam bloqueios e avisos para revisão antes da emissão |
 | **RH do cliente** | "Baixei 718 vidas e cobraram 737, por quê?" | Gera extrato CSV pessoa a pessoa com dias ativos, plano, regra e corte de conhecimento, para compartilhar com o RH |
 | **Comercial** | "O que eu vender vai dar para cobrar?" | Catálogo declarativo em `config/contratos.json` com 8 parâmetros explícitos |
-| **CS** | "Por que a nota subiu ou caiu este mês?" | Gera decomposição por causa em reais e explicação em português com guardrail anti-alucinação |
+| **CS** | "Por que a nota subiu ou caiu este mês?" | Gera decomposição por causa em reais e explicação em português com filtro numérico e revisão humana |
 
 ---
 
@@ -92,7 +92,7 @@ Todos os contratos estão em `config/contratos.json`. **No código de produção
 Os testes e os exemplos do CLI usam a fixture sintética versionada em `tests/fixtures/base.sqlite`. A base completa do case não é publicada; para usá-la, coloque `base.sqlite` em `data/base.sqlite` (ver `data/README.md`). Requisito: **Python 3.9+** (testado em **Python 3.9.6**, zero dependências externas).
 
 ```bash
-# 1. Rodar a suíte de testes (27 testes; usa a fixture incluída)
+# 1. Rodar a suíte de testes (28 testes; usa a fixture incluída)
 python3 -m unittest discover -s tests -v
 
 # 2. Fechar um cliente e competência (gera extrato CSV e resumo no terminal)
@@ -124,7 +124,7 @@ bloqueios e avisos para um fluxo preventivo; o protótipo não se conecta ao emi
 fiscal e não bloqueia notas no sistema de origem. Os extratos são produzidos para
 revisão e compartilhamento; o protótipo não os envia ao cliente.
 
-| Código da regra | Tipo | Caso real observado em `exemplos/matriz_alertas_28_notas.csv` |
+| Código da regra | Tipo | Exemplo observado no conjunto do case (`exemplos/matriz_alertas_28_notas.csv`) |
 |---|---|---|
 | `UNIDADE_VIDAS_EM_CONTRATO_TITULAR` | `bloqueio` | Bravo Set/2026 (`499` == total de vidas quando titulares = `332`) |
 | `CARGA_ATIPICA_QUARENTENA` | `bloqueio` | Delta Out/2026 (carga `07/10` com `600` entradas e lag de até `1.010` dias) |
@@ -140,7 +140,7 @@ revisão e compartilhamento; o protótipo não os envia ao cliente.
 
 * **Onde NÃO entra:** nenhuma função de cálculo em `medipreco/timeline.py`, `medipreco/contratos.py`, `medipreco/extrato.py` ou `medipreco/validacoes.py` chama IA.
 * **Onde entra (`medipreco/explicador.py`):** recebe apenas o resumo numérico estruturado do motor (sem nomes de pessoas) para redigir a explicação em português.
-* **Guardrail anti-alucinação (`validar_cifras_no_texto`):** toda cifra numérica no texto gerado pela IA precisa existir nos dados de entrada; caso contrário, o texto é descartado e substituído pelo modelo determinístico fixo.
+* **Filtro numérico (`validar_cifras_no_texto`):** descarta respostas com cifras que não aparecem nos dados de entrada. Ele não valida se a explicação está semanticamente correta; a revisão humana continua necessária.
 * **Modo offline:** funciona 100% sem chave de API; para ativar OpenAI, defina `OPENAI_API_KEY` no ambiente.
 
 ---

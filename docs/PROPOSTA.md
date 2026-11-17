@@ -2,9 +2,11 @@
 
 **De "foto" manual em planilha para um motor determinístico, configurável e auditável. O protótipo reconcilia a base, analisa notas e prepara validações e relatórios; emissão fiscal e acompanhamento do pagamento ficam fora do escopo atual.**
 
+*Os nomes e números apresentados a seguir pertencem ao conjunto fictício do case.*
+
 ---
 
-## 1. O Problema: por que "718 vs. 737" acontece todo mês
+## 1. O Problema: a divergência "718 vs. 737"
 
 Em outubro de 2026, o RH da Aurora Logística baixou sua base no dia 31 e encontrou **718 vidas**, mas recebeu uma nota fiscal cobrando **737 vidas**. Hoje ninguém consegue explicar essa conta rápido porque o fechamento olha apenas uma **foto** do sistema (`contagem_em`) perto do dia 26:
 
@@ -19,7 +21,7 @@ Em outubro de 2026, o RH da Aurora Logística baixou sua base no dia 31 e encont
 > **A nota fiscal é o resultado de uma conta que qualquer pessoa consegue refazer.**
 > * O cálculo é **100% determinístico**, executado sobre o histórico de `eventos` (nunca sobre a foto de `vinculos`).
 > * As regras de cada contrato vivem em **configuração declarativa** ([config/contratos.json](../config/contratos.json)), sem `if` por cliente no código.
-> * **IA nunca calcula valor**: ela atua apenas na ponta de explicação em português sobre o extrato já calculado, protegida por guardrail que descarta qualquer resposta com números inventados.
+> * **IA nunca calcula valor**: ela atua apenas na explicação em português sobre o extrato já calculado; um filtro rejeita cifras que não constam nos dados fornecidos, mas não substitui a revisão humana da explicação.
 
 ---
 
@@ -61,8 +63,8 @@ Ao rodar o motor sobre a base do case (com conhecimento até `12/11/2026`) e com
    * O contrato cobra R\$ 15,00 **por titular ativo** (`332` na foto de `26/08 09h`, `333` na emissão de `27/08`, `334` em `12/11`).
    * A nota `NF-01187` cobrou **499** (R\$ 7.485,00) — exatamente o total de **vidas** (titulares + 167 dependentes). O protótipo classifica a divergência como bloqueio; impedir a emissão efetivamente exige integração com o fluxo fiscal, que está fora do escopo atual. Além disso, a compensação da Cláusula 4.4 (`336 - 333 = +3` titulares = +R\$ 45,00) nunca era feita.
 2. **Delta Benefícios — Efeito degrau + lote mensal atrasado (-R\$ 3.456,00 em Set; -R\$ 3.488,00 em Out):**
-   * A Delta envia o movimento do mês sempre nos dias `3–5` do mês seguinte (lag médio de `110,3` dias).
-   * Ao tirar foto no dia 26 sem aplicar a Cláusula 7.2 ("ativo por ≥ 1 dia no mês"), a base caiu de `5.000` (`4.941` em Set; `4.892` em Out) e **pulou da faixa de R\$ 9,00 para R\$ 10,00** — gerando um efeito degrau de **-R\$ 5.106,00** (Set) e **-R\$ 5.048,00** (Out) no preço unitário! Pela regra contratual (`5.106` e `5.048` vidas), permanece na faixa de R\$ 9,00.
+   * Nos lotes de entradas de jul–set/2026, o processamento ocorreu nos dias `3` dos meses seguintes. Já o lote atípico de `07/10` trouxe `600` entradas retroativas, com atraso de até `1.010` dias.
+   * Ao tirar foto no dia 26 sem aplicar a Cláusula 7.2 ("ativo por ≥ 1 dia no mês"), a base caiu de `5.000` (`4.941` em Set; `4.892` em Out) e **pulou da faixa de R\$ 9,00 para R\$ 10,00**. O impacto isolado do degrau no valor final foi de **-R\$ 5.106,00** em Set e **-R\$ 5.048,00** em Out (não no preço unitário). Pela regra contratual (`5.106` e `5.048` vidas), permanece na faixa de R\$ 9,00.
    * Em `07/10`, subiram `600` entradas erradas (desfeitas pelo suporte em `09/10`). A validação identifica e classifica a carga para quarentena; o bloqueio operacional depende de integração. A anulação evita considerar ~R\$ 5.400/mês indevidos na apuração.
 3. **Estrela Indústria — Desligamentos fora do SLA e mínimo garantido (-R\$ 95,00 em Out):**
    * O RH tem lag médio de `16,5` dias (contrato prevê 5 dias úteis). Em Out/2026, na emissão (`03/11`) havia `510` vidas (R\$ 4.845,00); após a carga tardia de `05/11`, a realidade de `26/10` caiu para **478 vidas**, acionando o mínimo garantido de **500 vidas** (R\$ 4.750,00) → crédito de **R\$ 95,00** na nota seguinte.

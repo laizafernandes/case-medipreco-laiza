@@ -2,10 +2,17 @@
 
 from __future__ import annotations
 
-import sqlite3
-import unittest
+from argparse import Namespace
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
+import sqlite3
+from tempfile import TemporaryDirectory
+from types import SimpleNamespace
+import unittest
+from unittest.mock import patch
 
+from medipreco.__main__ import cmd_fechar
 from medipreco.contratos import carregar_contratos
 from medipreco.explicador import explicar_extrato, validar_cifras_no_texto
 from medipreco.extrato import gerar_extratos_cliente
@@ -46,6 +53,14 @@ class TestValidacoesEtapa5(unittest.TestCase):
         quarentena = validar_cargas_atipicas_quarentena(self.conn, "Delta Benefícios", "2026-10")
         self.assertTrue(any(a.detalhes["dia_processamento"] == "2026-10-07" for a in quarentena))
 
+        antes_da_carga = validar_cargas_atipicas_quarentena(
+            self.conn,
+            "Delta Benefícios",
+            "2026-10",
+            conhecido_ate="2026-10-06 23:59:59",
+        )
+        self.assertFalse(any(a.detalhes["dia_processamento"] == "2026-10-07" for a in antes_da_carga))
+
         alerta_fx = validar_proximidade_limite_faixa("Delta Benefícios", "2026-10", 5048, self.contratos)
         self.assertIsNotNone(alerta_fx)
         self.assertEqual(alerta_fx.detalhes["limite"], 5000)
@@ -58,11 +73,57 @@ class TestValidacoesEtapa5(unittest.TestCase):
         self.assertIsNotNone(alerta_min)
         self.assertEqual(alerta_min.detalhes["real"], 478)
 
-        alerta_sla = validar_desligamentos_fora_sla(self.conn, "Estrela Indústria", "2026-10")
+        alerta_sla = validar_desligamentos_fora_sla(
+            self.conn,
+            "Estrela Indústria",
+            "2026-10",
+            conhecido_ate="2026-11-05 23:59:59",
+        )
         self.assertIsNotNone(alerta_sla)
         self.assertGreater(alerta_sla.detalhes["fora_sla"], 0)
 
+        alerta_sla_na_emissao = validar_desligamentos_fora_sla(
+            self.conn,
+            "Estrela Indústria",
+            "2026-10",
+            conhecido_ate="2026-11-03 23:59:59",
+        )
+        self.assertIsNone(alerta_sla_na_emissao)
+
         self.assertIsNone(validar_soma_extrato_independente(extratos[0]))
+
+    def test_fechar_usa_corte_de_conhecimento_e_nota_anterior(self) -> None:
+        with TemporaryDirectory() as saida:
+            args = Namespace(
+                cliente="Bravo Tecnologia",
+                competencia="2026-10",
+                conhecido_ate="2026-11-12",
+                db=str(DB_PATH),
+                saida=saida,
+            )
+            texto = StringIO()
+            with patch(
+                "medipreco.__main__.explicar_extrato",
+                return_value=SimpleNamespace(texto="ok"),
+            ), redirect_stdout(texto):
+                self.assertEqual(cmd_fechar(args), 0)
+            self.assertIn("VARIACAO_MAIOR_10_PCT", texto.getvalue())
+
+        with TemporaryDirectory() as saida:
+            args = Namespace(
+                cliente="Estrela Indústria",
+                competencia="2026-10",
+                conhecido_ate="2026-11-03",
+                db=str(DB_PATH),
+                saida=saida,
+            )
+            texto = StringIO()
+            with patch(
+                "medipreco.__main__.explicar_extrato",
+                return_value=SimpleNamespace(texto="ok"),
+            ), redirect_stdout(texto):
+                self.assertEqual(cmd_fechar(args), 0)
+            self.assertNotIn("DESLIGAMENTO_FORA_SLA", texto.getvalue())
 
 
 class TestExplicadorIAEtapa5(unittest.TestCase):

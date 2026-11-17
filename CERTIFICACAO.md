@@ -25,12 +25,13 @@
 | **C** | Estrela out: `510` (03/11), `478` (12/11), mínimo `500`, crédito R\$ `95,00` | **OK** | SQL independente + `test_estrela_outubro...` OK |
 | **C** | Cedro out: `961` pico, `984` distintas, `1.080` soma picos, `946` nota | **OK** | SQL independente com `LEAD()` |
 | **C** | Números de `README.md` e `docs/PROPOSTA.md` consistentes | **OK** | `docs/PROPOSTA.md:71` alinhado com `exemplos/matriz_alertas_28_notas.csv` |
-| **D** | `python3 -m unittest discover -s tests -v`: 27 testes + comportamento | **OK** | `Ran 27 tests — OK` usando `tests/fixtures/base.sqlite` |
+| **D** | `python3 -m unittest discover -s tests -v`: 28 testes + comportamento | **OK** | `Ran 28 tests — OK` usando `tests/fixtures/base.sqlite` |
 | **D** | Comandos `fechar` e `tudo` rodam sem a base local completa | **OK** | Ambos executados com a fixture sintética; `tudo` reproduz os 27 CSVs de `exemplos/` |
+| **D** | Alertas respeitam o corte de conhecimento e comparam a variação com a nota anterior | **OK** | Testes de corte para carga/SLA e smoke test de variação em `fechar` |
 | **E** | Sem chaves/segredos nem caminhos absolutos locais ou dados pessoais | **OK** | `grep` em todo o repositório retornou zero ocorrências |
 | **E** | Extrato e IA sem nomes de pessoas (só IDs) | **OK** | `PRAGMA table_info(pessoas)` sem coluna de nome |
 | **E** | Arquivos locais do case fora do Git (`git ls-files`) | **OK** | `data/base.sqlite`, `contratos/`, `saida/`, `scratch/` e `.env` são ignorados; `data/README.md` é versionado |
-| **E** | Guardrail descarta número inventado | **OK** | `test_aurora_outubro_718_vs_737_sem_ia_e_guardrail` OK |
+| **E** | Cifras ausentes dos dados de entrada são rejeitadas | **OK** | `test_aurora_outubro_718_vs_737_sem_ia_e_guardrail` OK |
 | **F** | `docs/RELATO_IA.md` atualizado com as duas IAs e erros reais | **OK** | `docs/RELATO_IA.md` |
 
 ---

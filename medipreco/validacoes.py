@@ -134,10 +134,18 @@ def validar_cargas_atipicas_quarentena(
     competencia: str,
     limite_lote_entradas: int = 300,
     limite_retroativo_dias: int = 90,
+    conhecido_ate: str | None = None,
 ) -> list[AlertaValidacao]:
     """Regra 5: coloca em quarentena lotes com muitas entradas de uma vez ou data_informada > 90 dias retroativa."""
+    filtro_corte = ""
+    params: list[Any] = [cliente, competencia]
+    if conhecido_ate is not None:
+        filtro_corte = "AND ev.data_processamento <= ?"
+        params.append(conhecido_ate)
+    params.extend((limite_lote_entradas, limite_retroativo_dias))
+
     rows = conn.execute(
-        """
+        f"""
         SELECT date(ev.data_processamento) AS dia_proc,
                COUNT(*) AS qtd_entradas,
                MAX(julianday(date(ev.data_processamento)) - julianday(ev.data_informada)) AS max_lag_dias
@@ -146,11 +154,12 @@ def validar_cargas_atipicas_quarentena(
         WHERE e.cliente = ?
           AND ev.tipo_evento = 'entrada'
           AND substr(ev.data_processamento, 1, 7) = ?
+          {filtro_corte}
         GROUP BY dia_proc
         HAVING qtd_entradas >= ? OR max_lag_dias > ?
         ORDER BY dia_proc
         """,
-        (cliente, competencia, limite_lote_entradas, limite_retroativo_dias),
+        params,
     ).fetchall()
 
     alertas: list[AlertaValidacao] = []
@@ -176,10 +185,17 @@ def validar_desligamentos_fora_sla(
     cliente: str,
     competencia: str,
     sla_dias_corridos: int = 7,
+    conhecido_ate: str | None = None,
 ) -> AlertaValidacao | None:
     """Regra 6: alerta quando há desligamentos informados após o SLA contratual."""
+    filtro_corte = ""
+    params: list[Any] = [cliente, competencia, sla_dias_corridos]
+    if conhecido_ate is not None:
+        filtro_corte = "AND ev.data_processamento <= ?"
+        params.append(conhecido_ate)
+
     row = conn.execute(
-        """
+        f"""
         SELECT COUNT(*) AS fora_sla,
                ROUND(AVG(julianday(date(ev.data_processamento)) - julianday(ev.data_informada)), 1) AS media_lag
         FROM eventos ev
@@ -188,8 +204,9 @@ def validar_desligamentos_fora_sla(
           AND ev.tipo_evento = 'saida'
           AND substr(ev.data_informada, 1, 7) = ?
           AND (julianday(date(ev.data_processamento)) - julianday(ev.data_informada)) > ?
+          {filtro_corte}
         """,
-        (cliente, competencia, sla_dias_corridos),
+        params,
     ).fetchone()
     if row and row[0] > 0:
         return AlertaValidacao(

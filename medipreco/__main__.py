@@ -14,7 +14,7 @@ import sqlite3
 from pathlib import Path
 
 from medipreco.comparacao import CONHECIDO_FINAL, comparar_emitido_vs_contrato
-from medipreco.contratos import carregar_contratos
+from medipreco.contratos import _competencia_anterior, carregar_contratos
 from medipreco.explicador import explicar_extrato
 from medipreco.extrato import ExtratoNota, gerar_extratos_cliente
 from medipreco.formatacao import formatar_brl
@@ -32,6 +32,21 @@ from medipreco.validacoes import (
 
 def _normalizar_corte(data_ou_ts: str) -> str:
     return data_ou_ts if len(data_ou_ts) > 10 else f"{data_ou_ts} 23:59:59"
+
+
+def _valor_nota_competencia_anterior(
+    conn: sqlite3.Connection, cliente: str, competencia: str
+) -> float | None:
+    competencia_anterior = _competencia_anterior(competencia)
+    row = conn.execute(
+        """
+        SELECT ROUND(SUM(valor_item), 2)
+        FROM notas_emitidas
+        WHERE cliente = ? AND competencia = ?
+        """,
+        (cliente, competencia_anterior),
+    ).fetchone()
+    return float(row[0]) if row and row[0] is not None else None
 
 
 def _slug(texto: str) -> str:
@@ -110,8 +125,14 @@ def _rodar_alertas_cliente(
         a7 = validar_soma_extrato_independente(ex)
         if a7:
             alertas.append(a7)
-    alertas.extend(validar_cargas_atipicas_quarentena(conn, cliente, competencia))
-    a6 = validar_desligamentos_fora_sla(conn, cliente, competencia)
+    alertas.extend(
+        validar_cargas_atipicas_quarentena(
+            conn, cliente, competencia, conhecido_ate=corte_ts
+        )
+    )
+    a6 = validar_desligamentos_fora_sla(
+        conn, cliente, competencia, conhecido_ate=corte_ts
+    )
     if a6:
         alertas.append(a6)
     return alertas
@@ -152,7 +173,12 @@ def cmd_fechar(args: argparse.Namespace) -> int:
         for it in ex.itens:
             print(f"  * {it.descricao}: {it.quantidade} × {formatar_brl(it.valor_unitario)} = {formatar_brl(it.valor_total)}")
 
-    alertas = _rodar_alertas_cliente(conn, args.cliente, args.competencia, extratos, None, corte, contratos)
+    valor_anterior = _valor_nota_competencia_anterior(
+        conn, args.cliente, args.competencia
+    )
+    alertas = _rodar_alertas_cliente(
+        conn, args.cliente, args.competencia, extratos, valor_anterior, corte, contratos
+    )
     if alertas:
         print("\nAlertas pré-emissão:")
         for al in alertas:
@@ -297,8 +323,14 @@ def cmd_tudo(args: argparse.Namespace) -> int:
                 al_sum = validar_soma_extrato_independente(ex)
                 if al_sum:
                     alertas.append(al_sum)
-            alertas.extend(validar_cargas_atipicas_quarentena(conn, cliente, comp))
-            al_sla = validar_desligamentos_fora_sla(conn, cliente, comp)
+            alertas.extend(
+                validar_cargas_atipicas_quarentena(
+                    conn, cliente, comp, conhecido_ate=corte
+                )
+            )
+            al_sla = validar_desligamentos_fora_sla(
+                conn, cliente, comp, conhecido_ate=corte
+            )
             if al_sla:
                 alertas.append(al_sla)
 

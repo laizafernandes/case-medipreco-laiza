@@ -3,9 +3,8 @@
 Regras estritas de arquitetura:
 1. Recebe APENAS dados estruturados do motor (sem nomes de pessoas — LGPD).
 2. Nunca calcula valores.
-3. Guardrail obrigatório: toda cifra numérica presente no texto gerado pela IA
-   precisa existir nos dados de entrada; caso contrário, o texto é descartado
-   e substituído pelo modelo determinístico fixo.
+3. Guardrail numérico: rejeita cifras que não aparecem nos dados de entrada;
+   não substitui a revisão semântica da explicação.
 4. Funciona 100% sem IA externa (fallback determinístico).
 """
 
@@ -29,7 +28,7 @@ class ResultadoExplicacao:
 
 
 def _extrair_cifras(texto: str) -> set[float]:
-    """Extrai números no formato BR (1.234,56 / 718) ou EN (1234.56) para checagem anti-alucinação."""
+    """Extrai números em formatos BR ou EN para o filtro de cifras."""
     tokens = re.findall(r"\d+(?:\.\d{3})+,\d+|\d+,\d+|\d+\.\d+|\d+", texto)
     valores: set[float] = set()
     for t in tokens:
@@ -142,7 +141,7 @@ def explicar_extrato(
     dados_estruturados: dict[str, Any],
     gerador_ia: Callable[[dict[str, Any]], str | None] | None = None,
 ) -> ResultadoExplicacao:
-    """Gera explicação em português com guardrail anti-alucinação e fallback fixo."""
+    """Gera explicação com verificação numérica e fallback determinístico."""
     fn_ia = gerador_ia if gerador_ia is not None else _chamar_openai_opcional
     texto_ia = fn_ia(dados_estruturados)
 
